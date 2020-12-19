@@ -7,26 +7,27 @@
                         <img src="../../assets/img/img.jpg" class="user-avator" alt />
                         <div class="user-info-cont">
                             <div class="user-info-name">{{name}}</div>
-                            <div>{{role}}</div>
+                            <div>今天也要好好吃药！</div>
                         </div>
                     </div>
                     <div class="user-info-list">
-                        上次登录时间：
+                        上次服药时间：
                         <span>2019-11-01</span>
                     </div>
                     <div class="user-info-list">
-                        上次登录地点：
+                        上次服药地点：
                         <span>东莞</span>
                     </div>
                 </el-card>
-                <el-card shadow="hover" style="height:252px;">
+                <el-card shadow="hover" style="height:373px;">
                     <div slot="header" class="clearfix">
-                        <span>语言详情</span>
-                    </div>Vue
-                    <el-progress :percentage="71.3" color="#42b983"></el-progress>JavaScript
-                    <el-progress :percentage="24.1" color="#f1e05a"></el-progress>CSS
-                    <el-progress :percentage="13.7"></el-progress>HTML
-                    <el-progress :percentage="5.9" color="#f56c6c"></el-progress>
+                        <span>服药排行榜</span>
+                        <i class="el-icon-lx-top"></i>
+                    </div>
+                    <div v-for="(item,index) in medicine_list" :key="index">
+                       <span>{{item.name}}</span>
+                       <el-progress :percentage="item.percentage" :color="medicine_percentage_list[index]"></el-progress>
+                    </div>
                 </el-card>
             </el-col>
             <el-col :span="16">
@@ -36,8 +37,7 @@
                             <div class="grid-content grid-con-1">
                                 <i class="el-icon-lx-people grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">1234</div>
-                                    <div>用户访问量</div>
+                                    <div class="grid-num">完善资料</div>
                                 </div>
                             </div>
                         </el-card>
@@ -47,8 +47,7 @@
                             <div class="grid-content grid-con-2">
                                 <i class="el-icon-lx-notice grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">321</div>
-                                    <div>系统消息</div>
+                                    <div class="grid-num">我的消息</div>
                                 </div>
                             </div>
                         </el-card>
@@ -58,8 +57,39 @@
                             <div class="grid-content grid-con-3">
                                 <i class="el-icon-lx-goods grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">5000</div>
-                                    <div>数量</div>
+                                    <div class="grid-num">我的订单</div>
+                                </div>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20" class="mgb20" type="flex" justify="space-around">
+                    <el-col :span="8">
+                        <el-card shadow="hover" :body-style="{padding: '0px'}">
+                            <div class="grid-content grid-con-4">
+                                <i class="el-icon-lx-calendar grid-con-icon"></i>
+                                <div class="grid-cont-right">
+                                    <div class="grid-num">积分签到</div>
+                                </div>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card shadow="hover" :body-style="{padding: '0px'}">
+                            <div class="grid-content grid-con-5">
+                                <i class="el-icon-lx-question grid-con-icon"></i>
+                                <div class="grid-cont-right">
+                                    <div class="grid-num">健康问答</div>
+                                </div>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card shadow="hover" :body-style="{padding: '0px'}">
+                            <div class="grid-content grid-con-6">
+                                <i class="el-icon-lx-present grid-con-icon"></i>
+                                <div class="grid-cont-right">
+                                    <div class="grid-num">推荐有礼</div>
                                 </div>
                             </div>
                         </el-card>
@@ -97,12 +127,12 @@
         <el-row :gutter="20">
             <el-col :span="12">
                 <el-card shadow="hover">
-                    <schart ref="bar" class="schart" canvasId="bar" :options="options"></schart>
+                    
                 </el-card>
             </el-col>
             <el-col :span="12">
                 <el-card shadow="hover">
-                    <schart ref="line" class="schart" canvasId="line" :options="options2"></schart>
+                    
                 </el-card>
             </el-col>
         </el-row>
@@ -110,7 +140,6 @@
 </template>
 
 <script>
-import Schart from 'vue-schart';
 import bus from '../common/bus';
 export default {
     name: 'dashboard',
@@ -215,16 +244,22 @@ export default {
                         data: [74, 118, 200, 235, 90]
                     }
                 ]
-            }
+            },
+            medicine_list:[                           //展示服用药品列表----只展示 top7
+                {name:'阿司匹林',percentage:'71.3'},
+                {name:'布洛芬',percentage:'22.1'},
+                {name:'吗啡',percentage:'33.3'},
+                {name:'消炎痛',percentage:'25.4'},
+                {name:'吗啡',percentage:'33.3'},
+                {name:'消炎痛',percentage:'25.4'},
+                 {name:'消炎痛',percentage:'25.4'}
+            ],
+            medicine_percentage_list:['#42b983','#f1e05a','#f56c6c','#f56cdc','#8c61cd','#2bb2d3','#a5b942']
         };
     },
     components: {
-        Schart
     },
     computed: {
-        role() {
-            return this.name === 'admin' ? '超级管理员' : '普通用户';
-        }
     },
     // created() {
     //     this.handleListener();
@@ -283,7 +318,7 @@ export default {
 }
 
 .grid-num {
-    font-size: 30px;
+    font-size: 18px;
     font-weight: bold;
 }
 
@@ -309,7 +344,7 @@ export default {
 }
 
 .grid-con-2 .grid-num {
-    color: rgb(45, 140, 240);
+    color:  rgb(100, 213, 114);
 }
 
 .grid-con-3 .grid-con-icon {
@@ -318,6 +353,30 @@ export default {
 
 .grid-con-3 .grid-num {
     color: rgb(242, 94, 67);
+}
+
+.grid-con-4 .grid-con-icon {
+    background: rgb(187,162, 53);
+}
+
+.grid-con-4 .grid-num {
+    color: rgb(187,162, 53);
+}
+
+.grid-con-5 .grid-con-icon {
+    background: rgb(193,70, 174);
+}
+
+.grid-con-5 .grid-num {
+    color: rgb(193,70, 174);
+}
+
+.grid-con-6 .grid-con-icon {
+    background: rgb(132,80,240);
+}
+
+.grid-con-6 .grid-num {
+    color: rgb(132,80,240);
 }
 
 .user-info {
@@ -372,5 +431,12 @@ export default {
 .schart {
     width: 100%;
     height: 300px;
+}
+
+
+.el-icon-lx-top:before{
+    color: #e75050;
+    font-weight: bold;
+    margin-left: 5px;
 }
 </style>
