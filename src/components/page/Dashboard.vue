@@ -34,7 +34,7 @@
                 <el-row :gutter="20" class="mgb20">
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-1">
+                            <div class="grid-content grid-con-1"  @click="jumpPage('/personInfo')">
                                 <i class="el-icon-lx-people grid-con-icon"></i>
                                 <div class="grid-cont-right">
                                     <div class="grid-num">完善资料</div>
@@ -44,7 +44,7 @@
                     </el-col>
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-2">
+                            <div class="grid-content grid-con-2" @click="jumpPage('/remind')">
                                 <i class="el-icon-lx-notice grid-con-icon"></i>
                                 <div class="grid-cont-right">
                                     <div class="grid-num">服药提醒</div>
@@ -54,7 +54,7 @@
                     </el-col>
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-3">
+                            <div class="grid-content grid-con-3"  @click="jumpPage('/orders')">
                                 <i class="el-icon-lx-goods grid-con-icon"></i>
                                 <div class="grid-cont-right">
                                     <div class="grid-num">我的订单</div>
@@ -66,7 +66,7 @@
                 <el-row :gutter="20" class="mgb20" type="flex" justify="space-around">
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-4">
+                            <div class="grid-content grid-con-4" @click="jumpPage('/sign')">
                                 <i class="el-icon-lx-calendar grid-con-icon"></i>
                                 <div class="grid-cont-right">
                                     <div class="grid-num">积分签到</div>
@@ -76,7 +76,7 @@
                     </el-col>
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-5">
+                            <div class="grid-content grid-con-5" @click="jumpPage('/query')">
                                 <i class="el-icon-lx-question grid-con-icon"></i>
                                 <div class="grid-cont-right">
                                     <div class="grid-num">健康资讯</div>
@@ -86,7 +86,7 @@
                     </el-col>
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-6">
+                            <div class="grid-content grid-con-6" @click="jumpPage('/calendar')">
                                 <i class="el-icon-lx-calendar grid-con-icon"></i>
                                 <div class="grid-cont-right">
                                     <div class="grid-num">健康日历</div>
@@ -410,7 +410,11 @@ export default {
         },
         deletetodoList(index,row){
            this.$delete(this.todoList,index)
-        }
+        },
+        jumpPage(item){    //按钮点击跳转
+            console.log('asdfad')
+            this.$router.push(item)
+        } 
     }
 };
 </script>
