@@ -70,6 +70,21 @@ export default {
                     icon: 'el-icon-lx-remind',
                     index: 'remind',
                     title: '服药提醒',
+                },
+                {
+                    icon: 'el-icon-lx-people',
+                    index: 'personInfo',
+                    title: '完善信息',
+                },
+                {
+                    icon: 'el-icon-lx-punch',
+                    index: 'mission',
+                    title: '积分签到',
+                },
+                {
+                    icon: 'el-icon-lx-like',
+                    index: 'opintion',
+                    title: '健康报告',
                 }
             ]
         };

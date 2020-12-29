@@ -6,22 +6,22 @@
                     <div class="user-info">
                         <img src="../../assets/img/img.jpg" class="user-avator" alt />
                         <div class="user-info-cont">
-                            <div class="user-info-name">{{name}}</div>
+                            <div class="user-info-name">{{user.name}}</div>
                             <div>今天也要好好吃药！</div>
                         </div>
                     </div>
                     <div class="user-info-list">
-                        上次服药时间：
-                        <span>2019-11-01</span>
+                        身高：
+                        <span>{{user.height}}cm</span>
                     </div>
                     <div class="user-info-list">
-                        上次服药地点：
-                        <span>东莞</span>
+                        体重：
+                        <span>{{user.weight}}kg</span>
                     </div>
                 </el-card>
                 <el-card shadow="hover" style="height:373px;">
                     <div slot="header" class="clearfix">
-                        <span>服药排行榜</span>
+                        <span>服药频率：</span>
                         <i class="el-icon-lx-top"></i>
                     </div>
                     <div v-for="(item,index) in medicine_list" :key="index">
@@ -54,10 +54,10 @@
                     </el-col>
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-3"  @click="jumpPage('/orders')">
+                            <div class="grid-content grid-con-3"  @click="jumpPage('/opintion')">
                                 <i class="el-icon-lx-goods grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">我的订单</div>
+                                    <div class="grid-num">健康报告</div>
                                 </div>
                             </div>
                         </el-card>
@@ -66,7 +66,7 @@
                 <el-row :gutter="20" class="mgb20" type="flex" justify="space-around">
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-4" @click="jumpPage('/sign')">
+                            <div class="grid-content grid-con-4" @click="jumpPage('/mission')">
                                 <i class="el-icon-lx-calendar grid-con-icon"></i>
                                 <div class="grid-cont-right">
                                     <div class="grid-num">积分签到</div>
@@ -99,7 +99,7 @@
                     <div slot="header" class="clearfix">
                         <span>待办事项</span>
                         <el-button style="float: right; padding: 3px 0" type="text" @click="dialogFormVisible=true;dialogForm.isAdd=true">添加</el-button>
-                        <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+                        <el-dialog title="添加待办" :visible.sync="dialogFormVisible">
                             <el-form :model="dialogForm">
                                 <el-form-item label="代办名称" :label-width="'120px'">
                                 <el-input v-model="dialogForm.title" autocomplete="off"></el-input>
@@ -148,12 +148,12 @@
         <el-row :gutter="20">
             <el-col :span="12">
                 <el-card shadow="hover">
-                    <basic-charts  :option="options" :id="'bloodPressure'"></basic-charts>
+                    <basic-charts  :option="options" :id="'bloodPressure'" :time="time"></basic-charts>
                 </el-card>
             </el-col>
             <el-col :span="12">
                 <el-card shadow="hover">
-                    <basic-charts :option="options2" :id="'heartJump'"></basic-charts>
+                    <basic-charts :option="options2" :id="'heartJump'" :time="time"></basic-charts>
                 </el-card>
             </el-col>
         </el-row>
@@ -161,14 +161,22 @@
 </template>
 
 <script>
+import { v4 as uuidv4 } from 'uuid'
 import bus from '../common/bus';
 import BasicCharts from './BaseCharts.vue'
+import { heartRates } from '../../api/index'
+import { bloodPressure } from '../../api/index'
+
 export default {
     name: 'dashboard',
     data() {
         return {
-            name: localStorage.getItem('ms_username'),
-            todoList: [
+            user: {          //用户信息
+                name: localStorage.getItem('ms_username'),
+                height: 177,
+                weight: 60
+            },
+            todoList: [      //待办
                 {
                     title: '吃药',
                     status: false
@@ -192,36 +200,6 @@ export default {
                 {
                     title: '吃药',
                     status: true
-                }
-            ],
-            data: [
-                {
-                    name: '2018/09/04',
-                    value: 1083
-                },
-                {
-                    name: '2018/09/05',
-                    value: 941
-                },
-                {
-                    name: '2018/09/06',
-                    value: 1139
-                },
-                {
-                    name: '2018/09/07',
-                    value: 816
-                },
-                {
-                    name: '2018/09/08',
-                    value: 327
-                },
-                {
-                    name: '2018/09/09',
-                    value: 228
-                },
-                {
-                    name: '2018/09/10',
-                    value: 1065
                 }
             ],
             options: {        //血压的记录
@@ -259,7 +237,7 @@ export default {
                     }
                 },
                 series: [{
-                    name: '对应时间xxx的血压变化',
+                    name: '30天的血压变化',
                     data: [
                         [Date.UTC(1970,  9, 27), 71  ],
                         [Date.UTC(1970, 10, 10), 73  ],
@@ -328,7 +306,7 @@ export default {
                 },
                 series: [{
                     name: 'xxx用户名',
-                    data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+                    data: [52.4, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6]
                 }]
             },
             medicine_list:[     //展示服用药品列表----只展示 top7
@@ -338,7 +316,7 @@ export default {
                 {name:'消炎痛',percentage: 25.4},
                 {name:'吗啡',percentage: 33.3},
                 {name:'消炎痛',percentage: 25.4},
-                 {name:'消炎痛',percentage: 25.4}
+                {name:'消炎痛',percentage: 25.4}
             ],
             medicine_percentage_list:['#42b983','#f1e05a','#f56c6c','#f56cdc','#8c61cd','#2bb2d3','#a5b942'],
             dialogFormVisible: false,
@@ -347,7 +325,8 @@ export default {
                 status:false,
                 isAdd: false,
                 editId: -1
-            }
+            },
+            time: ''
         };
     },
     components: {
@@ -355,17 +334,6 @@ export default {
     },
     computed: {
     },
-    // created() {
-    //     this.handleListener();
-    //     this.changeDate();
-    // },
-    // activated() {
-    //     this.handleListener();
-    // },
-    // deactivated() {
-    //     window.removeEventListener('resize', this.renderChart);
-    //     bus.$off('collapse', this.handleBus);
-    // },
     methods: {
         changeDate() {
             const now = new Date().getTime();
@@ -374,21 +342,7 @@ export default {
                 item.name = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
             });
         },
-        // handleListener() {
-        //     bus.$on('collapse', this.handleBus);
-        //     // 调用renderChart方法对图表进行重新渲染
-        //     window.addEventListener('resize', this.renderChart);
-        // },
-        // handleBus(msg) {
-        //     setTimeout(() => {
-        //         this.renderChart();
-        //     }, 200);
-        // },
-        // renderChart() {
-        //     this.$refs.bar.renderChart();
-        //     this.$refs.line.renderChart();
-        // }
-        submit(){
+        submit(){                            //待办框提交
            this.dialogFormVisible = false
            let curData={'title':this.dialogForm.title,'status':this.dialogForm.status}
            console.log(this.dialogForm)
@@ -401,20 +355,43 @@ export default {
            this.dialogForm.isAdd=false
            this.dialogForm.editId=-1
         },
-        edittodoList(index,row){
+        edittodoList(index,row){             //编辑待办
            this.dialogFormVisible = true
            this.dialogForm.title = row.title
            this.dialogForm.status = row.status
            this.dialogForm.isAdd = false
            this.dialogForm.editId = index
         },
-        deletetodoList(index,row){
+        deletetodoList(index,row){          //删除待办
            this.$delete(this.todoList,index)
         },
+
         jumpPage(item){    //按钮点击跳转
             console.log('asdfad')
             this.$router.push(item)
-        } 
+        },
+        paintHeartRate(){  //心率图数据
+            heartRates().then(res=>{
+                console.log("心率记录",res)
+            })
+        },
+        paintBloodPressure(){  //血压图数据
+            bloodPressure().then(res=>{
+                console.log(res)
+                let temp = []
+                for(var i=0;i<res.length;i++){
+                    var array=res[i].date.split('-')
+                    temp.push([Date.UTC(array[0],array[1]-1,array[2].split('T')[0]),res[i].number])
+                }
+                this.options.series[0].data = temp
+                this.time = uuidv4()
+                console.log(this.options)
+            })
+        }
+    },
+    mounted(){
+        // this.paintHeartRate()
+        this.paintBloodPressure()
     }
 };
 </script>

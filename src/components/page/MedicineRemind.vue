@@ -19,6 +19,7 @@
                                 <el-button icon="el-icon-check" round class="btn" @click="changeStatus(item,index)" :disabled="item.status?true:false" :style="{'background':item.status?'#2fcd40':'#3e2fcd'}">
                                     {{item.status?'已服药':'服药'}}
                                 </el-button>
+                                <el-button type="danger" icon="el-icon-delete" round class="btn" @click="deleteDrug(item,index)">删除</el-button>
                             </div>
                         </el-card>
                     </el-col>
@@ -51,7 +52,7 @@
                         <el-form :model="remindForm">
                             <el-form-item label="服药时间" :label-width="'120px'">
                                 <el-time-select
-                                v-model="remindForm.time"
+                                v-model="remindForm.take_drug_time"
                                 :picker-options="{
                                     start: '00:00',
                                     step: '00:15',
@@ -61,7 +62,7 @@
                                 </el-time-select>
                             </el-form-item>
                             <el-form-item label="药品名称" :label-width="'120px'">
-                                <el-input v-model="remindForm.name" autocomplete="off"></el-input>
+                                <el-input v-model="remindForm.dname" autocomplete="off"></el-input>
                             </el-form-item>
                             <el-form-item label="服用剂量" :label-width="'120px'">
                                 <el-input v-model="remindForm.number" autocomplete="off"></el-input>
@@ -79,14 +80,19 @@
 </template>
 
 <script>
+import {getMedicineList} from '../../api/index'
+import {takeMedicine} from '../../api/index'
+import {setNewMedicine} from '../../api/index'
+import {deleteMedicine} from '../../api/index'
+
 export default {
   name:'',
   data(){
    return {
       remind_list:[        //服药提醒列表
-          {time: '11:08',name: '阿昔洛韦',number: 1,status: true},
-          {time: '11:08',name: '红霉素',number: 2,status: false},
-          {time: '11:08',name: '纳爱斯',number: 3,status: false}
+          {time: '11:08',name: '阿昔洛韦',number: 1,status: true, medicineId:''},
+          {time: '11:08',name: '红霉素',number: 2,status: false, medicineId:''},
+          {time: '11:08',name: '纳爱斯',number: 3,status: false, medicineId:''}
       ],
       healthy_tip:[
           "6:30起床一杯水早起喝杯水，既可以补充身体对水分的需要，又可以冲刷胃肠道，还能美容养颜，清醒大脑。记得出门之前喝一杯温水哦！",
@@ -101,34 +107,63 @@ export default {
       ],
       dialogFormVisible: false,
       remindForm:{
-          time: '',
-          name: '',
-          number: 0,
-          status: false
+          take_drug_time: '',
+          dname: '',
+          number: 0
       }
    }
   },
   methods: {
-      changeStatus(item,index){    //点击服药按钮，发送ajax请求更新数据库
-            console.log(item,index)
-            let temp = {
-                "time":this.remind_list[index].time,
-                "name":this.remind_list[index].name,
-                "number":this.remind_list[index].number,
-                "status":true
-            }
-            this.$set(this.remind_list,index,temp)
+      changeStatus(item,index){    //服药
+            console.log(item)
+            takeMedicine(item.medicineId).then(res=>{
+               if(res.status == 'success'){
+                   console.log("下次记得按时哦")
+                   this.getMedicineList()
+               }  
+            })
       },
-      submit(){
+      submit(){              //添加新的服药提醒
           this.dialogFormVisible = false
-          this.remind_list.push(this.remindForm)
+          setNewMedicine({
+              dname: this.remindForm.dname,
+              number: parseInt(this.remindForm.number),
+              take_drug_time: this.remindForm.take_drug_time+":00"
+          }).then(res=>{
+              if(res.status == 'success')
+                 this.getMedicineList()
+          })
           this.remindForm = {
-          time: '',
-          name: '',
-          number: 0,
-          status: false
+                take_drug_time: '',
+                dname: '',
+                number: 0
           }
+      },
+      getMedicineList(){   //获取今日服药列表
+          getMedicineList().then(res=>{
+              var temp = []
+              for(var i=0;i<res.length;i++){
+                  temp.push(
+                      {
+                          time: res[i].take_drug_time,
+                          name: res[i].dname,
+                          number: res[i].number,
+                          status: res[i].isTaken,
+                          medicineId: res[i].id
+                      })
+                  this.remind_list = temp
+              }
+          })
+      },
+      deleteDrug(item,index){        //删除服药提醒
+           deleteMedicine(item.medicineId).then(res=>{
+               if(res.status == 'success')
+                  this.getMedicineList()
+           })
       }
+  },
+  mounted(){
+      this.getMedicineList()
   }
 }
 </script>

@@ -1,15 +1,18 @@
 <template>
-   <div :option="option" :id="id" :width="width" :height="height"></div>
+  <div>
+     <div :option="option" :id="id" :time="time" :style="{'width':width,'height':height,'margin':'0 auto'}"></div>
+  </div>
 </template>
 
 <script>
 import Highcharts from 'highcharts'
+import {v4 as uuidv4} from 'uuid'
 
 export default {
   name:'',
   data(){
    return {
-
+      id: ''
    }
   },
   props:{
@@ -19,26 +22,33 @@ export default {
               return {}
           }
       },
-      id: String,
       width: {
           type: String,
-          default: '460px'
+          default: '584px'
       },
       height: {
           type: String,
-          default: '780px'
+          default: '440px'
+      },
+      time:{
+          type: String,
+          default: ''
       }
   },
   components:{
       Highcharts
   },
   watch:{
-      option(){
-          Highcharts.chart(this.id,this.option);
+      time(){
+          Highcharts.chart(this.id,this.option)
       }
   },
   mounted(){
+      console.log("Highchart 初始化")
       Highcharts.chart(this.id,this.option)
+  },
+  created(){
+      this.id = uuidv4()
   }
 }
 </script>

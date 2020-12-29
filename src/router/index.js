@@ -33,7 +33,27 @@ export default new Router({
                     path: '/remind',
                     component: () => import(/* webpackChunkName: "403" */ '../components/page/MedicineRemind.vue'),
                     meta: { title: '服药提醒' }
-                }
+                },
+                {
+                    path: '/personInfo',
+                    component: () => import(/* webpackChunkName: "403" */ '../components/page/InfoForm.vue'),
+                    meta: { title: '完善资料' }
+                },
+                {
+                    path: '/mission',
+                    component: () => import(/* webpackChunkName: "403" */ '../components/page/MissionList.vue'),
+                    meta: { title: '积分签到' }
+                },
+                {
+                    path: '/icon',
+                    component: () => import(/* webpackChunkName: "403" */ '../components/page/Icon.vue'),
+                    meta: { title: '图标管理' }
+                },
+                {
+                    path: '/opintion',
+                    component: () => import(/* webpackChunkName: "403" */ '../components/page/Opintion.vue'),
+                    meta: { title: '健康管理' }
+                },
             ]
         },
         {

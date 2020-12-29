@@ -2,9 +2,9 @@
     <div class="login-wrap">
         <div class="ms-login">
             <div class="ms-title">科学用药助手</div>
-            <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
-                <el-form-item prop="username">
-                    <el-input v-model="param.username" placeholder="username">
+            <el-form :model="user" :rules="rules" ref="login" label-width="0px" class="ms-content">
+                <el-form-item prop="uid">
+                    <el-input v-model="user.uid" placeholder="username">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
@@ -12,7 +12,7 @@
                     <el-input
                         type="password"
                         placeholder="password"
-                        v-model="param.password"
+                        v-model="user.password"
                         @keyup.enter.native="submitForm()"
                     >
                         <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
@@ -28,15 +28,17 @@
 </template>
 
 <script>
+import { login } from '../../api/index'
+
 export default {
     data: function() {
         return {
-            param: {
-                username: 'admin',
-                password: '123123',
+            user: {
+                uid: 'Chen',
+                password: '123456',
             },
             rules: {
-                username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+                uid: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
                 password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
             },
         };
@@ -45,9 +47,15 @@ export default {
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
-                    this.$message.success('登录成功');
-                    localStorage.setItem('ms_username', this.param.username);
-                    this.$router.push('/');
+                    login(this.user).then(res=>{
+                        if(res.status=='success'){
+                            this.$message.success('登录成功')
+                            localStorage.setItem('ms_username',this.user.uid)
+                            this.$router.push('/')
+                        }
+                    }).catch(res=>{
+                        this.$message.error('登录失败，请重试！')
+                    })
                 } else {
                     this.$message.error('请输入账号和密码');
                     console.log('error submit!!');
