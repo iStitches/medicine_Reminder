@@ -12,7 +12,7 @@
       <div class="form-box">
         <el-form ref="form" :model="form" label-width="80px">
           <el-form-item label="昵称">
-            <el-input v-model="form.name" placeholder="请输入用户名"></el-input>
+            <el-input v-model="form.uid" placeholder="请输入用户名"></el-input>
           </el-form-item>
 
           <el-form-item label="密码">
@@ -21,8 +21,8 @@
 
           <el-form-item label="性别">
             <el-select v-model="form.gender" placeholder="请选择">
-              <el-option key="man" label="男" value="man"></el-option>
-              <el-option key="woman" label="女" value="woman"></el-option>
+              <el-option key="man" label="男" value=0></el-option>
+              <el-option key="woman" label="女" value=1></el-option>
             </el-select>
           </el-form-item>
 
@@ -62,14 +62,16 @@
 </template>
 
 <script>
+import { update } from '../../api/index'
+
 export default {
   name: "baseform",
   data() {
     return {
       form: {
-        name: "",
-        age: "",
-        gender: "",
+        uid: "",
+        age: 0,
+        gender: 0,
         phone: "",
         password: "",
         birth: "",
@@ -80,10 +82,12 @@ export default {
   },
   methods: {
     onSubmit() {
-      event.preventDefault();
-      let formData = JSON.stringify(this.form);
-      console.log(formData);
-      this.$message.success("提交成功！");
+      update(this.form).then(res=>{
+        if(res.status == 'success')
+           alert('更新成功')
+        else 
+           alert('更新失败')
+      })
     },
   },
 };

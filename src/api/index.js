@@ -8,7 +8,22 @@ export function login(data) {
         data
     })
 }
-
+//zhuce 
+export function register(data) {
+    return request({
+        url: '/register',
+        method: 'post',
+        data
+    })
+  }
+//更新
+export function update(data) {
+    return request({
+        url: '/update',
+        method: 'post',
+        data
+    })
+  }
 //获取心率记录
 export function heartRates() {
     return request({
