@@ -48,6 +48,7 @@
                             <el-date-picker
                             v-model="form.birth"
                             type="date"
+                            value-format="yyyy-MM-dd"
                             placeholder="选择日期">
                             </el-date-picker>
                         </el-form-item>
@@ -123,7 +124,7 @@ export default {
         },
         register() {
             let temp = this.form.birth
-            this.form.birth = ''+temp.getFullYear()+'-'+(temp.getMonth()+1)+'-'+temp.getDate()
+            // this.form.birth = ''+temp.getFullYear()+'-'+(temp.getMonth()+1)+'-'+temp.getDate()
             this.form.age = parseInt(this.form.age)
             this.form.gender = parseInt(this.form.gender)
             this.form.height = parseInt(this.form.height)
